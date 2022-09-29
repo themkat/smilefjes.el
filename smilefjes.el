@@ -130,3 +130,6 @@
       (buffer-face-set 'smilefjes-face)
       (read-only-mode))
     (switch-to-buffer report-buffer)))
+
+(provide 'smilefjes)
+;;; smilefjes.el ends here
