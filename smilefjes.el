@@ -122,26 +122,33 @@
 (defun smilefjes ()
   "Main entrypoint."
   (interactive)
+
+  ;; reset state
+  (setq smilefjes-restaurants-complete (ht ("entries" '())))
+  (setq smilefjes-selected-city nil)
+  (setq smilefjes-selected-restaurant nil)
+
   ;; hack to allow bigger data sets to run my awful recursive algorithm above
   (let ((max-lisp-eval-depth 10000))
-    (setq smilefjes-restaurants-complete (ht ("entries" '())))
     (smilefjes-fetch-cities)
-    (smilefjes-fetch-mattilsynet-reports smilefjes-selected-city))
+    (when (not (null smilefjes-selected-city))
+      (smilefjes-fetch-mattilsynet-reports smilefjes-selected-city)))
   
   ;; Create a buffer with a reports
-  (let* ((restaurant-name (car smilefjes-selected-restaurant))
-         (restaurant-rating (cdr smilefjes-selected-restaurant))
-         (report-buffer (generate-new-buffer (concat "*Mattilsynet smilefjes report for " restaurant-name "*"))))
-    (with-current-buffer report-buffer
-      (insert restaurant-name)
-      (insert ?\n)
-      (insert "Rating: ")
-      (insert (smilefjes-rating-to-emoji restaurant-rating))
-      (when (require 'emojify nil t)
-        (emojify-mode))
-      (buffer-face-set 'smilefjes-face)
-      (read-only-mode))
-    (switch-to-buffer report-buffer)))
+  (-if-let* ((restaurant-info smilefjes-selected-restaurant)
+             (restaurant-name (car restaurant-info))
+             (restaurant-rating (cdr restaurant-info))
+             (report-buffer (generate-new-buffer (concat "*Mattilsynet smilefjes report for " restaurant-name "*"))))
+      (with-current-buffer report-buffer
+        (insert restaurant-name)
+        (insert ?\n)
+        (insert "Rating: ")
+        (insert (smilefjes-rating-to-emoji restaurant-rating))
+        (when (require 'emojify nil t)
+          (emojify-mode))
+        (buffer-face-set 'smilefjes-face)
+        (read-only-mode)
+        (switch-to-buffer report-buffer))))
 
 (provide 'smilefjes)
 ;;; smilefjes.el ends here
