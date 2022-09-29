@@ -92,7 +92,6 @@
                 (lambda (&key data &allow-other-keys)
                   (let ((total-pages (ht-get data "pages"))
                         (current-page (or page 1)))
-                    (message "Total pages: %S" total-pages)
                     (if (< current-page total-pages)
                         (progn
                           (ht-set! smilefjes-restaurants-complete "entries" (append (ht-get data "entries")
