@@ -1,0 +1,6 @@
+* smilefjes.el - Mattilsynet smilefjes directly in Emacs!
+In Norway, the food administration (Mattilsynet), makes a rating of restaurants and other dining places based upon how clean the place is, how hygienic the staff is when preparing the food etc. Now you can get this rating directly in Emacs! Simply run the interactive function =smilefjes=, and helm will prompt you with everything you need! 
+
+[[./smilefjes.gif]]
+
+Why? I wanted a simple project to use [[https://github.com/tkf/emacs-request][request.el]] more seriously, and also experiment with the Mattilsynet Smilefjes API. Had done some small experiments with request.el in the past, but nothing with real public APIs. Wanted a simpler project before experimenting with bigger APIs. Thought others might find it fun or useful(?????) to check these details in Emacs as well. Can probably be prettyfied a lot, as it's VERY hacked together quickly to experiment with these APIs.
