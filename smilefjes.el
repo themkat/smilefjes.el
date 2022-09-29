@@ -79,8 +79,10 @@
                                (setq smilefjes-selected-restaurant (assoc restaurant helm-restaurants))))
           :buffer "*smilefjes-select-restaurant*")))
 
-(defun smilefjes-fetch-mattilsynet-reports (city)
-    (request (concat "https://hotell.difi.no/api/json/mattilsynet/smilefjes/tilsyn?poststed=" city)
+(defvar smilefjes-restaurants-complete nil)
+(defun smilefjes-fetch-mattilsynet-reports (city &optional page)
+  (request (concat "https://hotell.difi.no/api/json/mattilsynet/smilefjes/tilsyn?poststed=" city
+                   "&page=" (number-to-string (or page 1)))
       :headers '(("accept" . "application/json"))
       :parser (lambda ()
                 (let ((json-object-type 'hash-table)
@@ -88,7 +90,15 @@
                   (json-read)))
       :success (cl-function
                 (lambda (&key data &allow-other-keys)
-                  (smilefjes-select-restaurant data)))
+                  (let ((total-pages (ht-get data "pages"))
+                        (current-page (or page 1)))
+                    (message "Total pages: %S" total-pages)
+                    (if (< current-page total-pages)
+                        (progn
+                          (ht-set! smilefjes-restaurants-complete "entries" (append (ht-get data "entries")
+                                                                                    (ht-get smilefjes-restaurants-complete "entries")))
+                          (smilefjes-fetch-mattilsynet-reports city (+ current-page 1)))
+                      (smilefjes-select-restaurant smilefjes-restaurants-complete)))))
       ;; not recommended, but makes our code easier to handle and reason about :P 
       :sync t
       :error (cl-function
@@ -113,8 +123,11 @@
 (defun smilefjes ()
   "Main entrypoint."
   (interactive)
-  (smilefjes-fetch-cities)
-  (smilefjes-fetch-mattilsynet-reports smilefjes-selected-city)
+  ;; hack to allow bigger data sets to run my awful recursive algorithm above
+  (let ((max-lisp-eval-depth 10000))
+    (setq smilefjes-restaurants-complete (ht ("entries" '())))
+    (smilefjes-fetch-cities)
+    (smilefjes-fetch-mattilsynet-reports smilefjes-selected-city))
   
   ;; Create a buffer with a reports
   (let* ((restaurant-name (car smilefjes-selected-restaurant))
