@@ -34,8 +34,8 @@
 
 (defun smilefjes--cities-to-helm-sources (cities)
   (-map (lambda (city-info)
-          (-let [(&hash "code" code "name" name) city-info]
-            (cons name code)))
+          (-let [(&hash "name" name) city-info]
+            name))
         (ht-get cities "codes")))
 
 (defvar smilefjes-selected-city nil)
@@ -79,21 +79,21 @@
                                (setq smilefjes-selected-restaurant (assoc restaurant helm-restaurants))))
           :buffer "*smilefjes-select-restaurant*")))
 
-(defun smilefjes-fetch-mattilsynet-reports ()
-    (request "https://hotell.difi.no/api/json/mattilsynet/smilefjes/tilsyn?"
-    :headers '(("accept" . "application/json"))
-    :parser (lambda ()
-              (let ((json-object-type 'hash-table)
-                    (json-array-type 'list))
-                (json-read)))
-    :success (cl-function
-              (lambda (&key data &allow-other-keys)
-                (smilefjes-select-restaurant data)))
-    ;; not recommended, but makes our code easier to handle and reason about :P 
-    :sync t
-    :error (cl-function
-            (lambda (&rest args &key error-thrown &allow-other-keys)
-              (message "Failed to fetch Mattilsynet reports!")))))
+(defun smilefjes-fetch-mattilsynet-reports (city)
+    (request (concat "https://hotell.difi.no/api/json/mattilsynet/smilefjes/tilsyn?poststed=" city)
+      :headers '(("accept" . "application/json"))
+      :parser (lambda ()
+                (let ((json-object-type 'hash-table)
+                      (json-array-type 'list))
+                  (json-read)))
+      :success (cl-function
+                (lambda (&key data &allow-other-keys)
+                  (smilefjes-select-restaurant data)))
+      ;; not recommended, but makes our code easier to handle and reason about :P 
+      :sync t
+      :error (cl-function
+              (lambda (&rest args &key error-thrown &allow-other-keys)
+                (message "Failed to fetch Mattilsynet reports!")))))
 
 (defun smilefjes-rating-to-emoji (rating)
   (cond ((or (string-equal rating "0")
@@ -114,8 +114,8 @@
   "Main entrypoint."
   (interactive)
   (smilefjes-fetch-cities)
-  (smilefjes-fetch-mattilsynet-reports)
-
+  (smilefjes-fetch-mattilsynet-reports smilefjes-selected-city)
+  
   ;; Create a buffer with a reports
   (let* ((restaurant-name (car smilefjes-selected-restaurant))
          (restaurant-rating (cdr smilefjes-selected-restaurant))
