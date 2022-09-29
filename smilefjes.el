@@ -92,11 +92,10 @@
                 (lambda (&key data &allow-other-keys)
                   (let ((total-pages (ht-get data "pages"))
                         (current-page (or page 1)))
+                    (ht-set! smilefjes-restaurants-complete "entries" (append (ht-get data "entries")
+                                                                              (ht-get smilefjes-restaurants-complete "entries")))
                     (if (< current-page total-pages)
-                        (progn
-                          (ht-set! smilefjes-restaurants-complete "entries" (append (ht-get data "entries")
-                                                                                    (ht-get smilefjes-restaurants-complete "entries")))
-                          (smilefjes-fetch-mattilsynet-reports city (+ current-page 1)))
+                        (smilefjes-fetch-mattilsynet-reports city (+ current-page 1))
                       (smilefjes-select-restaurant smilefjes-restaurants-complete)))))
       ;; not recommended, but makes our code easier to handle and reason about :P 
       :sync t
