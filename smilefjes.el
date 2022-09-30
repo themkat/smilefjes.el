@@ -33,10 +33,10 @@
 (require 'ht)
 
 (defun smilefjes--cities-to-helm-sources (cities)
-  (-map (lambda (city-info)
+  (-flatten (-map (lambda (city-info)
           (-let [(&hash "name" name) city-info]
-            name))
-        (ht-get cities "codes")))
+            (split-string name "/")))
+                  (ht-get cities "codes"))))
 
 (defvar smilefjes-selected-city nil)
 (defun smilefjes-select-city (cities)
@@ -48,7 +48,7 @@
           :buffer "*smilefjes-select-city*")))
 
 (defun smilefjes-fetch-cities ()
-  (request "https://data.ssb.no/api/klass/v1/classifications/131/codes?from=2022-06-06"
+  (request "https://data.ssb.no/api/klass/v1/classifications/110/codes?from=2022-06-06"
     :headers '(("accept" . "application/json"))
     :parser (lambda ()
               (let ((json-object-type 'hash-table)
