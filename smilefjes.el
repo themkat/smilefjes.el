@@ -31,6 +31,7 @@
 (require 'helm)
 (require 'dash)
 (require 'ht)
+(require 'url-util)
 
 (defun smilefjes--cities-to-helm-sources (cities)
   (-flatten (-map (lambda (city-info)
@@ -81,7 +82,7 @@
 
 (defvar smilefjes-restaurants-complete nil)
 (defun smilefjes-fetch-mattilsynet-reports (city &optional page)
-  (request (concat "https://hotell.difi.no/api/json/mattilsynet/smilefjes/tilsyn?poststed=" city
+  (request (concat "https://hotell.difi.no/api/json/mattilsynet/smilefjes/tilsyn?poststed=" (url-encode-url city)
                    "&page=" (number-to-string (or page 1)))
       :headers '(("accept" . "application/json"))
       :parser (lambda ()
