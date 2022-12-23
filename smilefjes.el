@@ -22,7 +22,7 @@
 ;; Simple package for checking if a restaurant have a good rating with the
 ;; food administration in Norway (Mattilsynet). The rating is given as a smiley
 ;; (smile is obviously good, straight mouth meh, sad is not so good).
-;; Determined by hygienic stuff and more, and is not a test of tastiness. 
+;; Determined by hygienic stuff and more, and is not a test of tastiness.
 ;; Emojify mode is recommended, but not required.
 
 ;;; Code:
@@ -34,6 +34,7 @@
 (require 'url-util)
 
 (defun smilefjes--cities-to-helm-sources (cities)
+  "Translates the json-ish format CITIES to a format helm can understand."
   (-flatten (-map (lambda (city-info)
           (-let [(&hash "name" name) city-info]
             (split-string name "/")))
@@ -41,6 +42,7 @@
 
 (defvar smilefjes-selected-city nil)
 (defun smilefjes-select-city (cities)
+  "Uses helm to select a city from the list CITIES. Collects the resulting city in SMILEFJES-SELECTED-CITY."
   (let ((helm-cities (smilefjes--cities-to-helm-sources cities)))
     (helm :sources (helm-build-sync-source "cities"
                      :candidates helm-cities
@@ -49,6 +51,7 @@
           :buffer "*smilefjes-select-city*")))
 
 (defun smilefjes-fetch-cities ()
+  "Fetch a list of cities, and then use the result to select a city."
   (request "https://data.ssb.no/api/klass/v1/classifications/110/codes?from=2022-06-06"
     :headers '(("accept" . "application/json"))
     :parser (lambda ()
@@ -58,7 +61,7 @@
     :success (cl-function
               (lambda (&key data &allow-other-keys)
                 (smilefjes-select-city data)))
-    ;; not recommended, but makes our code easier to handle and reason about :P 
+    ;; not recommended, but makes our code easier to handle and reason about :P
     :sync t
     :error (cl-function
             (lambda (&rest args &key error-thrown &allow-other-keys)
@@ -66,6 +69,7 @@
 
 
 (defun smilefjes--restaurants-to-helm-sources (cities)
+  "Translate the json-format CITIES to a format understandable by helm."
   (-map (lambda (city-info)
           (-let [(&hash "navn" name "total_karakter" rating) city-info]
             (cons name rating)))
@@ -73,15 +77,17 @@
 
 (defvar smilefjes-selected-restaurant nil)
 (defun smilefjes-select-restaurant (restaurants)
+  "Uses helm to select a restaurant from the list RESTAURANTS. Collects the resulting restaurant in SMILEFJES-SELECTED-RESTAURANT."
   (let ((helm-restaurants (smilefjes--restaurants-to-helm-sources restaurants)))
     (helm :sources (helm-build-sync-source "restaurants"
-                     :candidates (mapcar 'car helm-restaurants)
+                     :candidates (mapcar #'car helm-restaurants)
                      :action (lambda (restaurant)
                                (setq smilefjes-selected-restaurant (assoc restaurant helm-restaurants))))
           :buffer "*smilefjes-select-restaurant*")))
 
 (defvar smilefjes-restaurants-complete nil)
 (defun smilefjes-fetch-mattilsynet-reports (city &optional page)
+  "Fetches the Mattilsynet-reports for CITY. Use PAGE to paginate."
   (request (concat "https://hotell.difi.no/api/json/mattilsynet/smilefjes/tilsyn?poststed=" (url-encode-url city)
                    "&page=" (number-to-string (or page 1)))
       :headers '(("accept" . "application/json"))
@@ -98,13 +104,14 @@
                     (if (< current-page total-pages)
                         (smilefjes-fetch-mattilsynet-reports city (+ current-page 1))
                       (smilefjes-select-restaurant smilefjes-restaurants-complete)))))
-      ;; not recommended, but makes our code easier to handle and reason about :P 
+      ;; not recommended, but makes our code easier to handle and reason about :P
       :sync t
       :error (cl-function
               (lambda (&rest args &key error-thrown &allow-other-keys)
                 (message "Failed to fetch Mattilsynet reports!")))))
 
 (defun smilefjes-rating-to-emoji (rating)
+  "Translate the Mattilsynet report number RATING to emoji."
   (cond ((or (string-equal rating "0")
              (string-equal rating "1"))
          ":)")
