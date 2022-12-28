@@ -42,7 +42,8 @@
 
 (defvar smilefjes-selected-city nil)
 (defun smilefjes-select-city (cities)
-  "Uses helm to select a city from the list CITIES. Collects the resulting city in SMILEFJES-SELECTED-CITY."
+  "Uses helm to select a city from the list CITIES.
+Collects the resulting city in SMILEFJES-SELECTED-CITY."
   (let ((helm-cities (smilefjes--cities-to-helm-sources cities)))
     (helm :sources (helm-build-sync-source "cities"
                      :candidates helm-cities
@@ -64,7 +65,7 @@
     ;; not recommended, but makes our code easier to handle and reason about :P
     :sync t
     :error (cl-function
-            (lambda (&rest args &key error-thrown &allow-other-keys)
+            (lambda ()
               (message "Failed to fetch Norwegian cities!")))))
 
 
@@ -77,7 +78,8 @@
 
 (defvar smilefjes-selected-restaurant nil)
 (defun smilefjes-select-restaurant (restaurants)
-  "Uses helm to select a restaurant from the list RESTAURANTS. Collects the resulting restaurant in SMILEFJES-SELECTED-RESTAURANT."
+  "Uses helm to select a restaurant from the list RESTAURANTS.
+Collects the resulting restaurant in SMILEFJES-SELECTED-RESTAURANT."
   (let ((helm-restaurants (smilefjes--restaurants-to-helm-sources restaurants)))
     (helm :sources (helm-build-sync-source "restaurants"
                      :candidates (mapcar #'car helm-restaurants)
@@ -107,7 +109,7 @@
       ;; not recommended, but makes our code easier to handle and reason about :P
       :sync t
       :error (cl-function
-              (lambda (&rest args &key error-thrown &allow-other-keys)
+              (lambda ()
                 (message "Failed to fetch Mattilsynet reports!")))))
 
 (defun smilefjes-rating-to-emoji (rating)
@@ -124,8 +126,12 @@
 
 (defface smilefjes-face
   '((t :height 2.5))
-  "Face to make the size a little bigger in the result buffers.")
+  "Face to make the size a little bigger in the result buffers."
+  :group 'smilefjes)
 
+(declare-function emojify-mode "ext:emojify" nil t)
+
+;;;###autoload
 (defun smilefjes ()
   "Main entrypoint."
   (interactive)
@@ -138,7 +144,7 @@
   ;; hack to allow bigger data sets to run my awful recursive algorithm above
   (let ((max-lisp-eval-depth 10000))
     (smilefjes-fetch-cities)
-    (when (not (null smilefjes-selected-city))
+    (when smilefjes-selected-city
       (smilefjes-fetch-mattilsynet-reports smilefjes-selected-city)))
   
   ;; Create a buffer with a reports
