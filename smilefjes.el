@@ -20,7 +20,7 @@
 ;;; Commentary:
 
 ;; Simple package for checking if a restaurant have a good rating with the
-;; food administration in Norway (Mattilsynet). The rating is given as a smiley
+;; food administration in Norway (Mattilsynet).  The rating is given as a smiley
 ;; (smile is obviously good, straight mouth meh, sad is not so good).
 ;; Determined by hygienic stuff and more, and is not a test of tastiness.
 ;; Emojify mode is recommended, but not required.
@@ -42,7 +42,7 @@
 
 (defvar smilefjes-selected-city nil)
 (defun smilefjes-select-city (cities)
-  "Uses helm to select a city from the list CITIES.
+  "Use helm to select a city from the list CITIES.
 Collects the resulting city in SMILEFJES-SELECTED-CITY."
   (let ((helm-cities (smilefjes--cities-to-helm-sources cities)))
     (helm :sources (helm-build-sync-source "cities"
@@ -78,7 +78,7 @@ Collects the resulting city in SMILEFJES-SELECTED-CITY."
 
 (defvar smilefjes-selected-restaurant nil)
 (defun smilefjes-select-restaurant (restaurants)
-  "Uses helm to select a restaurant from the list RESTAURANTS.
+  "Use helm to select a restaurant from the list RESTAURANTS.
 Collects the resulting restaurant in SMILEFJES-SELECTED-RESTAURANT."
   (let ((helm-restaurants (smilefjes--restaurants-to-helm-sources restaurants)))
     (helm :sources (helm-build-sync-source "restaurants"
@@ -89,7 +89,7 @@ Collects the resulting restaurant in SMILEFJES-SELECTED-RESTAURANT."
 
 (defvar smilefjes-restaurants-complete nil)
 (defun smilefjes-fetch-mattilsynet-reports (city &optional page)
-  "Fetches the Mattilsynet-reports for CITY. Use PAGE to paginate."
+  "Fetches the Mattilsynet-reports for CITY.  Use PAGE to paginate."
   (request (concat "https://hotell.difi.no/api/json/mattilsynet/smilefjes/tilsyn?poststed=" (url-encode-url city)
                    "&page=" (number-to-string (or page 1)))
       :headers '(("accept" . "application/json"))
