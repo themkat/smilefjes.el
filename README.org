@@ -4,3 +4,25 @@ In Norway, the food administration (Mattilsynet), makes a rating of restaurants 
 [[./smilefjes.gif]]
 
 Why? I wanted a simple project to use [[https://github.com/tkf/emacs-request][request.el]] more seriously, and also experiment with the Mattilsynet Smilefjes API. Had done some small experiments with request.el in the past, but nothing with real public APIs. Wanted a simpler project before experimenting with bigger APIs. Thought others might find it fun or useful(?????) to check these details in Emacs as well. Can probably be prettyfied a lot, as it's VERY hacked together quickly to experiment with these APIs.
+
+
+** Dependencies
+smilefjes currently depends on the following packages:
+
+- [[https://github.com/emacs-helm/helm][helm]]
+- [[https://github.com/magnars/dash.el][dash]]
+- [[https://github.com/tkf/emacs-request][request.el]]
+- [[https://github.com/Wilfred/ht.el][ht.el]]
+- (optional) [[https://github.com/iqbalansari/emacs-emojify][emojify-mode]]
+
+** Installation
+***  From source
+Clone this repo locally, add the path to the load path and require smilefjes:
+#+BEGIN_SRC emacs-lisp
+(add-to-list 'load-path "/path/to/smilefjes")
+(require 'smilefjes)
+#+END_SRC
+
+
+** Usage
+To use, simply run M-x smilefjes, and you will be prompted for the necessary information :) 
