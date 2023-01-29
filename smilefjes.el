@@ -1,4 +1,4 @@
-;;; smilefjes.el --- Check if a restaurant has a good rating with Mattilsynet (food administration in Norway) -*- lexical-binding: t; -*-
+;;; smilefjes.el --- View Norwegian Food Safety Authority restaurant ratings  -*- lexical-binding: t; -*-
 
 ;; URL: https://github.com/themkat/mos-mode
 ;; Version: 0.0.1
@@ -20,7 +20,7 @@
 ;;; Commentary:
 
 ;; Simple package for checking if a restaurant have a good rating with the
-;; food administration in Norway (Mattilsynet).  The rating is given as a smiley
+;; Food Authority of Norway (Mattilsynet).  The rating is given as a smiley
 ;; (smile is obviously good, straight mouth meh, sad is not so good).
 ;; Determined by hygienic stuff and more, and is not a test of tastiness.
 ;; Emojify mode is recommended, but not required.
