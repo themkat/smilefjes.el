@@ -1,3 +1,4 @@
+[[https://melpa.org/#/smilefjes][file:https://melpa.org/packages/smilefjes-badge.svg]]
 * smilefjes.el - Mattilsynet smilefjes directly in Emacs!
 In Norway, the food administration (Mattilsynet), makes a rating of restaurants and other dining places based upon how clean the place is, how hygienic the staff is when preparing the food etc. Now you can get this rating directly in Emacs! Simply run the interactive function =smilefjes=, and helm will prompt you with everything you need! 
 
@@ -16,6 +17,20 @@ smilefjes currently depends on the following packages:
 - (optional) [[https://github.com/iqbalansari/emacs-emojify][emojify-mode]]
 
 ** Installation
+*** Melpa
+The easiest way is to install through [Melpa](https://melpa.org/#/getting-started). Using package-install, you can do it like this interactively:
+#+BEGIN_SRC text
+  M-x package-install RET smilefjes
+#+END_SRC
+
+Or in your config file:
+#+BEGIN_SRC emacs-lisp
+  (package-install 'smilefjes)
+#+END_SRC
+
+The package can also be installed and configured using use-package: =(use-package smilefjes)= (add the =:load-path= option to install it from local source).
+
+
 ***  From source
 Clone this repo locally, add the path to the load path and require smilefjes:
 #+BEGIN_SRC emacs-lisp
