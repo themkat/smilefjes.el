@@ -1,6 +1,6 @@
 ;;; smilefjes.el --- View Norwegian Food Safety Authority restaurant ratings  -*- lexical-binding: t; -*-
 
-;; URL: https://github.com/themkat/mos-mode
+;; URL: https://github.com/themkat/smilefjes.el
 ;; Version: 0.0.1
 ;; Package-Requires: ((emacs "24.4") (request "0.3.2") (ht "2.3") (dash "2.19.1") (helm "3.8.6"))
 
