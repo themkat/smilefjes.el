@@ -1,5 +1,9 @@
 [[https://melpa.org/#/smilefjes][file:https://melpa.org/packages/smilefjes-badge.svg]]
 * smilefjes.el - Mattilsynet smilefjes directly in Emacs!
+
+*NOTE December 20th 2024: Seems like the API this package relies on has been decommissioned. Looking for alternatives. Please post in [[https://github.com/themkat/smilefjes.el/issues/4][the issue]] if you have found one you wish to share. Like all things from the government in Norway, it eventually turns to shit or gets decommissioned. Fuck the government.*
+
+
 In Norway, the food administration (Mattilsynet), makes a rating of restaurants and other dining places based upon how clean the place is, how hygienic the staff is when preparing the food etc. Now you can get this rating directly in Emacs! Simply run the interactive function =smilefjes=, and helm will prompt you with everything you need! 
 
 [[./smilefjes.gif]]
