@@ -1,4 +1,3 @@
-[[https://melpa.org/#/smilefjes][file:https://melpa.org/packages/smilefjes-badge.svg]]
 * smilefjes.el - Mattilsynet smilefjes directly in Emacs!
 *NOTE December 20th 2024: Seems like the API this package relies on has been decommissioned.*
 
